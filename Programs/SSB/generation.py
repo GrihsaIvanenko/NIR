@@ -4,23 +4,29 @@ sys.path.append('../common/')
 from common import gen
 from evklid import calc_inverse
 from gen_prime import gen_prime_with_fix_len
+from rabin_miller import miller_rabin as check_simple
 from file_funcs import write_line_to_file
 
 # Генерируем ключ злоумышленника
-def gen_secret_key(t):
-    len_A = t * 3 // 4
-    A = gen_prime_with_fix_len(len_A)
-    return A
+def gen_secret_key(t, c):
+    len_T = t - c
+    T = gen_prime_with_fix_len(len_T)
+    return T
 
 # Процедура, вычисляющая открытый и закрытый ключи RSA.
-def gen_keys(t, A):
-    len_small = t // 4
-    p_small, q_small = -1, -1
-    while p_small == q_small:
-        p_small = gen_prime_with_fix_len(len_small)
-        q_small = gen_prime_with_fix_len(len_small)
-    p = gen(p_small, A, t)
-    q = gen(q_small, A, t)
+def gen_keys(t, c, T, K):
+    len_rq = t - c
+    abort_flag = False
+    while not abort_flag:
+        q = gen_prime_with_fix_len(len_rq)
+        r = gen_prime_with_fix_len(len_rq)
+        k = 2
+        while k <= K:
+            p = r + (k * q - r) % T
+            if check_simple(p, len_rq * 10):
+                abort_flag = True
+                break
+            k = k + 1
     n = p * q
     fi_n = (p - 1) * (q - 1)
     # Не предполагается работа с такими маленькими числами.
@@ -32,13 +38,14 @@ def gen_keys(t, A):
 
 # Интерфейс пользователя. Интерактивная генерация ключей.
 def demo_key_generation():
-    print("Введите 1 число t - число бит в числах p и q. Число t должно делиться на 4. Обычно используют 256, 512, 1024, 2048, 4096")
+    print("Введите 1 число t - число бит в числах p и q. Обычно используют 256, 512, 1024, 2048, 4096")
     t = int(input())
-    assert t % 4 == 0
-    A = gen_secret_key(t)
-    print(f"Секретный ключ злоумышленника {bin(A)}")
-    write_line_to_file(bin(A), "backdoor_key.txt")
-    e, d, n = gen_keys(t, A)
+    c = 7
+    T = gen_secret_key(t, c)
+    K = (t - c)
+    print(f"Секретный ключ злоумышленника {bin(T)} {bin(K)}")
+    write_line_to_file(bin(T) + " " + bin(K), "backdoor_key.txt")
+    e, d, n = gen_keys(t, c, T, K)
     print(f"Открытый ключ ({e}, {n})")
     print(f"Закрытый ключ ({d}, {n})")
     write_line_to_file(bin(e) + " " + bin(n), "public_key.txt")
