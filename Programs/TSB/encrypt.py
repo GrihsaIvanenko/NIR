@@ -66,9 +66,9 @@ def setup_with_keys(backdoor_key_path, public_key_path):
 # Интерфейс пользователя. Инструкция по использованию.
 def print_how_to_start_and_exit(exit_code = 1):
         print("Select Programs/sandbox directory")
-        print("Usage python3 ../SSB/encrypt.py --help")
-        print("Usage python3 ../SSB/encrypt.py")
-        print("Usage python3 ../SSB/encrypt.py *backdoor_key_path* *public_key_path*")
+        print("Usage python3 ../TSB/encrypt.py --help")
+        print("Usage python3 ../TSB/encrypt.py")
+        print("Usage python3 ../TSB/encrypt.py *backdoor_key_path* *public_key_path*")
         exit(exit_code)
 
 # Запуск демо-режима злоумышленника
@@ -88,16 +88,16 @@ if __name__ == "__main__":
 # Заходим в папку sandbox.
 # python3 encrypt.py --help
 # Select Programs/sandbox directory
-# Usage python3 ../SSB/encrypt.py --help
-# Usage python3 ../SSB/encrypt.py
-# Usage python3 ../SSB/encrypt.py *backdoor_key_path* *public_key_path*
+# Usage python3 ../TSB/encrypt.py --help
+# Usage python3 ../TSB/encrypt.py
+# Usage python3 ../TSB/encrypt.py *backdoor_key_path* *public_key_path*
 #
-# python3 ../SSB/encrypt.py
+# python3 ../TSB/encrypt.py
 # Закрытый ключ (24218047022184955043770602818166588113, 102926699844286058956324438494402130367)
 # Важно чтобы в папке запуска были файлы backdoor_key.txt public_key.txt, иначе программа не запустится!
 #
 # Переходим в другую папку
-# cd ../SSB
+# cd ../TSB
 # python3 encrypt.py ../sandbox/backdoor_key.txt ../sandbox/private_key.txt
 # Закрытый ключ (17, 102926699844286058956324438494402130367)
 # Попробуем по закрытому ключу получить открытый. Получилось.
